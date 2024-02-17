@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
     try {
       _timezone = await FlutterTimezone.getLocalTimezone();
     } catch (e) {
-      print('Could not get the local timezone');
+      print(e);
     }
     try {
       _availableTimezones = await FlutterTimezone.getAvailableTimezones();

@@ -39,13 +39,17 @@ void FlutterTimezonePlugin::HandleMethodCall(
     std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
   if (method_call.method_name().compare("getLocalTimezone") == 0) {
 
-      TIME_ZONE_INFORMATION tzinfo = {0};
-      GetTimeZoneInformation(&tzinfo);
+    TIME_ZONE_INFORMATION tzinfo = {0};
+    GetTimeZoneInformation(&tzinfo);
 
-      std::wstring ws(tzinfo.StandardName);
-      std::string str(ws.begin(), ws.end());
+    wchar_t *wc = tzinfo.StandardName;
+    int cch = WideCharToMultiByte(CP_ACP, 0, wc, -1, 0, 0, NULL, NULL);
+    char *psz = new char[cch];
 
-    result->Success(flutter::EncodableValue(str.c_str()));
+    WideCharToMultiByte(CP_ACP, 0, wc, -1, psz, cch, NULL, NULL);
+
+    result->Success(flutter::EncodableValue(psz));
+    delete[] psz;
 }
 else {
       result->NotImplemented();
